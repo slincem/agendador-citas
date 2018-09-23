@@ -1,5 +1,6 @@
 package co.com.meeting.registrationmeetingsapp.utils.factory;
 
+import co.com.meeting.registrationmeetingsapp.exception.BusinessException;
 import co.com.meeting.registrationmeetingsapp.model.entity.Customer;
 import co.com.meeting.registrationmeetingsapp.model.entity.Employee;
 import co.com.meeting.registrationmeetingsapp.model.entity.User;
@@ -18,7 +19,7 @@ public class UserFactory {
 			return new Employee();
 
 		default:
-			throw new Exception();
+			throw new BusinessException("No existe unn empleado de tipo " + userType);
 		}
 	}
 
