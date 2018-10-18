@@ -8,7 +8,7 @@ public interface UserService {
 	
 	public void registerUser(User user);
 	
-	public List<User> searchUsers();
+	public List<User> findAllUsers();
 	
 	public User findUser(String identification);
 	

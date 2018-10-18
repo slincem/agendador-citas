@@ -1,5 +1,8 @@
 package co.com.meeting.registrationmeetingsapp.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,36 +30,13 @@ public class UserController {
 	@CrossOrigin(value = "*")
 	@PostMapping(value = "/registerUser")
 	public ResponseEntity<Void> registerUser(@RequestBody UserRegistryInDTO userDto) throws Exception {
-		User user = createUserDependingOnType(userDto);
-		fillUserFieldsFromUserDto(user, userDto);
+		User userFromRequest = createUserDependingOnType(userDto);
+		fillUserFieldsFromUserDto(userFromRequest, userDto);
 		Account account = createAccountFromUserDto(userDto);
-		associateAccountToUser(user, account);
+		associateAccountToUser(userFromRequest, account);
 
-		userService.registerUser(user);
+		userService.registerUser(userFromRequest);
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
-	}
-
-	@CrossOrigin(value = "*")
-	@GetMapping(value = "/searchUser/{identification}")
-	public ResponseEntity<UserInformationOutDTO> findUserByIdentification(
-			@PathVariable("identification") String userIdentification) {
-		User userFoundByIdentification = userService.findUser(userIdentification);
-
-		UserInformationOutDTO userInformationOutDto = convertUserToUserInformationOutDto(userFoundByIdentification);
-
-		return new ResponseEntity<>(userInformationOutDto, HttpStatus.OK);
-	}
-
-	private UserInformationOutDTO convertUserToUserInformationOutDto(User user) {
-		UserInformationOutDTO userInformationOutDto = new UserInformationOutDTO();
-
-		userInformationOutDto.setName(user.getName());
-		userInformationOutDto.setLastName(user.getLastName());
-		userInformationOutDto.setAge(user.getAge());
-		userInformationOutDto.setIdentification(user.getIdentification());
-		userInformationOutDto.setBirthdate(user.getBirthdate());
-		userInformationOutDto.setType(user.getType());
-		return userInformationOutDto;
 	}
 
 	private User createUserDependingOnType(UserRegistryInDTO userDto) throws Exception {
@@ -79,6 +60,56 @@ public class UserController {
 	}
 
 	private void associateAccountToUser(User user, Account account) {
-		user.setAccount(account);
+		user.setAccount(null);
 	}
+
+	@CrossOrigin(value = "*")
+	@GetMapping(value = "/searchUser/{identification}")
+	public ResponseEntity<UserInformationOutDTO> findUserByIdentification(
+			@PathVariable("identification") String userIdentification) {
+		User userFoundByIdentification = userService.findUser(userIdentification);
+
+		UserInformationOutDTO userInformationToReturn = convertUserToUserInformationOutDto(userFoundByIdentification);
+
+		return new ResponseEntity<>(userInformationToReturn, HttpStatus.OK);
+	}
+
+	private UserInformationOutDTO convertUserToUserInformationOutDto(User user) {
+		UserInformationOutDTO userInformationOutDto = new UserInformationOutDTO();
+
+		userInformationOutDto.setName(user.getName());
+		userInformationOutDto.setLastName(user.getLastName());
+		userInformationOutDto.setAge(user.getAge());
+		userInformationOutDto.setIdentification(user.getIdentification());
+		userInformationOutDto.setBirthdate(user.getBirthdate());
+		userInformationOutDto.setType(user.getType());
+		return userInformationOutDto;
+	}
+	
+	@CrossOrigin(value = "*")
+	@GetMapping(value = "/searchUsers")
+	public ResponseEntity<List<UserInformationOutDTO>> findAllUsers() {
+
+		List<User> allUsersFound = userService.findAllUsers();
+		List<UserInformationOutDTO> usersFoundToReturn = convertAllUsersToUserInformationOutDtoList(allUsersFound);
+
+		return new ResponseEntity<>(usersFoundToReturn, HttpStatus.OK);
+	}
+
+	private List<UserInformationOutDTO> convertAllUsersToUserInformationOutDtoList(List<User> allUsersFound) {
+		List<UserInformationOutDTO> usersFoundToReturn = new ArrayList<>();
+		for (User user : allUsersFound) {
+			UserInformationOutDTO userConvertedInDto = convertUserToUserInformationOutDto(user);
+			usersFoundToReturn.add(userConvertedInDto);
+		}
+		return usersFoundToReturn;
+	}
+	
+	@CrossOrigin(value = "*")
+	@PutMapping(value = "/deleteUser")
+	public ResponseEntity<Void> deleteUserByIdentification(@RequestBody String userIdentification) {
+
+		return null;
+	}
+
 }

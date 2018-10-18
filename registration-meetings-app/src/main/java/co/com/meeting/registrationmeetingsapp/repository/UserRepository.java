@@ -14,7 +14,8 @@ import co.com.meeting.registrationmeetingsapp.model.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
+	
+	//La consulta en si misma sobra, debido a propiedad de SpringData.
 	@Query("SELECT u FROM User u WHERE u.identification = :identification")
 	public Optional<User> findByIdentification(@Param("identification") String identification);
 

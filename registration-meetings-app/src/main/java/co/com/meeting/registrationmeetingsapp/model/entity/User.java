@@ -29,7 +29,8 @@ public abstract class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_user", updatable = false, nullable = false)
 	private Long id;
-
+	
+	@Column(unique=true)
 	private String identification;
 
 	private String name;
@@ -38,14 +39,14 @@ public abstract class User implements Serializable {
 	private String lastName;
 
 	private String age;
-
+	
 	@Temporal(TemporalType.DATE)
 	private Date birthdate;
 
 	@Column(name = "user_type", updatable = false, insertable = false)
 	private String type;
 
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "user")
 	private Account account;
 
 	public Long getId() {
