@@ -1,25 +1,18 @@
 package co.com.meeting.registrationmeetingsapp.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import co.com.meeting.registrationmeetingsapp.model.dto.in.UserRegistryInDTO;
 import co.com.meeting.registrationmeetingsapp.model.dto.out.UserInformationOutDTO;
 import co.com.meeting.registrationmeetingsapp.model.entity.Account;
 import co.com.meeting.registrationmeetingsapp.model.entity.User;
 import co.com.meeting.registrationmeetingsapp.service.UserService;
 import co.com.meeting.registrationmeetingsapp.utils.factory.UserFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -33,7 +26,7 @@ public class UserController {
 		User userFromRequest = createUserDependingOnType(userDto);
 		fillUserFieldsFromUserDto(userFromRequest, userDto);
 		Account account = createAccountFromUserDto(userDto);
-		associateAccountToUser(userFromRequest, account);
+		associateAccountAndUser(userFromRequest, account);
 
 		userService.registerUser(userFromRequest);
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
@@ -59,8 +52,9 @@ public class UserController {
 		return account;
 	}
 
-	private void associateAccountToUser(User user, Account account) {
-		user.setAccount(null);
+	private void associateAccountAndUser(User user, Account account) {
+		account.setUser(user);
+		user.setAccount(account);
 	}
 
 	@CrossOrigin(value = "*")

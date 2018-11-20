@@ -1,5 +1,15 @@
 package co.com.meeting.registrationmeetingsapp.service;
 
+import co.com.meeting.registrationmeetingsapp.exception.BusinessException;
+import co.com.meeting.registrationmeetingsapp.model.entity.User;
+import co.com.meeting.registrationmeetingsapp.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
+
+import javax.annotation.PostConstruct;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,24 +17,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
-
-import co.com.meeting.registrationmeetingsapp.exception.BusinessException;
-import co.com.meeting.registrationmeetingsapp.model.entity.User;
-import co.com.meeting.registrationmeetingsapp.repository.UserRepository;
-
+@Slf4j
 @Service
 public class UserServiceImplementation implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
 	protected Properties errorMessagesProperties;
 
 	@Value("${error_messages_path}")
@@ -33,7 +32,9 @@ public class UserServiceImplementation implements UserService {
 	@PostConstruct
 	public void getErrorMessages() {
 		try (FileInputStream sqlPropertiesFile = new FileInputStream((ResourceUtils.getFile(errorMessagesPath)));
-				InputStreamReader readerPropertiesFile = new InputStreamReader(sqlPropertiesFile, "UTF-8");) {
+			 InputStreamReader readerPropertiesFile = new InputStreamReader(sqlPropertiesFile, "UTF-8");) {
+
+			errorMessagesProperties = new Properties();
 			errorMessagesProperties.load(readerPropertiesFile);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -52,7 +53,7 @@ public class UserServiceImplementation implements UserService {
 			saveUserInBD(user);
 		}
 	}
-	
+
 	private boolean isUserAlreadyRegistered(User user) {
 		boolean userIsAlreadyRegisteredInBD = false;
 		try {
@@ -60,6 +61,7 @@ public class UserServiceImplementation implements UserService {
 			userIsAlreadyRegisteredInBD = true;
 		} catch (BusinessException e) {
 			// Es correcto, el usuario aún no existe en el sistema
+			log.info("Usuario no existe, es posible registralo");
 		}
 
 		return userIsAlreadyRegisteredInBD;
