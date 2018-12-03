@@ -1,12 +1,16 @@
 package co.com.meeting.registrationmeetingsapp.model.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "user")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -31,7 +35,7 @@ public abstract class User implements Serializable {
     private String age;
 
     @Temporal(TemporalType.DATE)
-    private Date birthdate;
+    private Date birthDate;
 
     @Column(name = "user_type", updatable = false, insertable = false)
     private String type;

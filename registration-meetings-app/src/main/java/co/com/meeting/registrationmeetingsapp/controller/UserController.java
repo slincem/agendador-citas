@@ -1,7 +1,7 @@
 package co.com.meeting.registrationmeetingsapp.controller;
 
-import co.com.meeting.registrationmeetingsapp.model.dto.in.UserRegistryInDTO;
-import co.com.meeting.registrationmeetingsapp.model.dto.out.UserInformationOutDTO;
+import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in.UserRegistryInDTO;
+import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.out.UserInformationOutDTO;
 import co.com.meeting.registrationmeetingsapp.model.entity.Account;
 import co.com.meeting.registrationmeetingsapp.model.entity.User;
 import co.com.meeting.registrationmeetingsapp.service.UserService;
@@ -17,8 +17,11 @@ import java.util.List;
 @RestController
 public class UserController {
 
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
+
+	public UserController(UserService userService) {
+		this.userService = userService;
+	}
 
 	@CrossOrigin(value = "*")
 	@PostMapping(value = "/registerUser")
@@ -42,7 +45,7 @@ public class UserController {
 		user.setIdentification(userDto.getIdentification());
 		user.setLastName(userDto.getLastName());
 		user.setAge(userDto.getAge());
-		user.setBirthdate(userDto.getBirthdate());
+		user.setBirthDate(userDto.getBirthDate());
 	}
 
 	private Account createAccountFromUserDto(UserRegistryInDTO userDto) {
@@ -75,7 +78,7 @@ public class UserController {
 		userInformationOutDto.setLastName(user.getLastName());
 		userInformationOutDto.setAge(user.getAge());
 		userInformationOutDto.setIdentification(user.getIdentification());
-		userInformationOutDto.setBirthdate(user.getBirthdate());
+		userInformationOutDto.setBirthDate(user.getBirthDate());
 		userInformationOutDto.setType(user.getType());
 		return userInformationOutDto;
 	}

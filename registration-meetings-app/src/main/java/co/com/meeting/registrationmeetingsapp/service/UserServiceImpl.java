@@ -19,15 +19,18 @@ import java.util.Properties;
 
 @Slf4j
 @Service
-public class UserServiceImplementation implements UserService {
+public class UserServiceImpl implements UserService {
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
 	protected Properties errorMessagesProperties;
 
 	@Value("${error_messages_path}")
 	protected String errorMessagesPath;
+
+	public UserServiceImpl(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
 	@PostConstruct
 	public void getErrorMessages() {

@@ -21,10 +21,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	@Modifying
 	@Transactional
-	@Query("UPDATE User u set u.identification = :identification, u.name = :name, u.lastName = :last_name, u.age = :age, u.birthdate = :birthdate "
+	@Query("UPDATE User u set u.identification = :identification, u.name = :name, u.lastName = :last_name, u.age = :age, u.birthDate = :birthDate "
 			+ "WHERE u.identification = :identification")
 	public void update(@Param("identification") String identification, @Param("name") String name,
-			@Param("last_name") String lastName, @Param("age") String age, @Param("birthdate") String birthdate);
+			@Param("last_name") String lastName, @Param("age") String age, @Param("birthDate") String birthDate);
 	
 	@Query("SELECT u.type FROM User u WHERE u.identification = :identification")
 	public Optional<String> findUserType(@Param("identification") String identification);
