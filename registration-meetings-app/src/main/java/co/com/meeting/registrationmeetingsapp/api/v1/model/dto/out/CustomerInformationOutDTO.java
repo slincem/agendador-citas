@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class UserInformationOutDTO {
+public class CustomerInformationOutDTO {
 	
 	private String identification;
 	private String name;
@@ -13,5 +13,4 @@ public class UserInformationOutDTO {
 	private String age;
 	private Date birthDate;
 	private String type;
-
 }

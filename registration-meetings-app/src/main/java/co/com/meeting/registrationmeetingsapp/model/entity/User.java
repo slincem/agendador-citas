@@ -20,7 +20,7 @@ public abstract class User implements Serializable {
     private static final long serialVersionUID = -3373109788208364741L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user", updatable = false, nullable = false)
     private Long id;
 
@@ -43,4 +43,8 @@ public abstract class User implements Serializable {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Account account;
 
+    public void setAccount(Account account) {
+        account.setUser(this);
+        this.account = account;
+    }
 }

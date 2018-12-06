@@ -1,12 +1,13 @@
 package co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in;
 
+import co.com.meeting.registrationmeetingsapp.model.entity.Account;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class UserRegistryInDTO implements Serializable {
+public class CustomerRegistryInDTO implements Serializable {
 
 	private static final long serialVersionUID = 6038552632966804327L;
 	private String identification;
@@ -14,9 +15,6 @@ public class UserRegistryInDTO implements Serializable {
 	private String lastName;
 	private String age;
 	private Date birthDate;
-	private String username;
-	private String password;
-	private String userType;
-
+	private Account account;
 
 }

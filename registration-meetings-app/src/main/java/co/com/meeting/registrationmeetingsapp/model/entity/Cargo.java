@@ -8,7 +8,7 @@ public enum Cargo implements Serializable{
 	
 	private String value;
 	
-	private Cargo(String value) {
+	Cargo(String value) {
 		this.value = value;
 	}
 	

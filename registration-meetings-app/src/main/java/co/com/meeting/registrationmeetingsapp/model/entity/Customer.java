@@ -1,16 +1,14 @@
 package co.com.meeting.registrationmeetingsapp.model.entity;
 
-import java.io.Serializable;
-import java.util.Date;
+import co.com.meeting.registrationmeetingsapp.utils.factory.constants.UserType;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import co.com.meeting.registrationmeetingsapp.utils.factory.constants.UserType;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor

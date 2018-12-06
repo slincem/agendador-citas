@@ -2,9 +2,7 @@ package co.com.meeting.registrationmeetingsapp;
 
 import co.com.meeting.registrationmeetingsapp.model.entity.Account;
 import co.com.meeting.registrationmeetingsapp.model.entity.Customer;
-import lombok.Builder;
 
-import javax.persistence.*;
 import java.util.Date;
 
 public class CustomerTestDataBuilder {
