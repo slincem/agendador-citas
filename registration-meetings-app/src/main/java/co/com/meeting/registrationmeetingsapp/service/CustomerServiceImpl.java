@@ -4,22 +4,16 @@ import co.com.meeting.registrationmeetingsapp.api.v1.mapper.CustomerMapper;
 import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in.CustomerRegistryInDTO;
 import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.out.CustomerInformationOutDTO;
 import co.com.meeting.registrationmeetingsapp.exception.BusinessException;
+import co.com.meeting.registrationmeetingsapp.exception.messages.ErrorMessage;
 import co.com.meeting.registrationmeetingsapp.model.entity.Customer;
 import co.com.meeting.registrationmeetingsapp.model.entity.User;
 import co.com.meeting.registrationmeetingsapp.repository.CustomerRepository;
+import co.com.meeting.registrationmeetingsapp.utils.MessageSourceUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
-import javax.annotation.PostConstruct;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,31 +22,12 @@ public class CustomerServiceImpl implements CustomerService {
 
 	private final CustomerRepository customerRepository;
 	private final CustomerMapper customerMapper;
+	private final MessageSourceUtil messageSource;
 
-	private Properties errorMessagesProperties;
-
-	@Value("${error_messages_path}")
-	protected String errorMessagesPath;
-
-	public CustomerServiceImpl(CustomerRepository userRepository, CustomerMapper customerMapper) {
+	public CustomerServiceImpl(CustomerRepository userRepository, CustomerMapper customerMapper, MessageSourceUtil messageSource) {
 		this.customerRepository = userRepository;
 		this.customerMapper = customerMapper;
-	}
-
-	@PostConstruct
-	public void getErrorMessages() {
-		try (FileInputStream sqlPropertiesFile = new FileInputStream((ResourceUtils.getFile(errorMessagesPath)));
-			 InputStreamReader readerPropertiesFile = new InputStreamReader(sqlPropertiesFile, StandardCharsets.UTF_8)) {
-
-			errorMessagesProperties = new Properties();
-			errorMessagesProperties.load(readerPropertiesFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	protected String getErrorMessage(String errorMessageName) {
-		return errorMessagesProperties.getProperty(errorMessageName);
+		this.messageSource = messageSource;
 	}
 
 	@Override
@@ -61,7 +36,7 @@ public class CustomerServiceImpl implements CustomerService {
 		Customer customer = customerMapper.customerRegistryInDTOToCustomer(customerRegistryInDTO);
 
 		if (isCustomerAlreadyRegistered(customer)) {
-			throw new BusinessException(getErrorMessage("userAlreadyRegistered"));
+			throw new BusinessException(messageSource.buildMessage(ErrorMessage.USER_IS_ALREADY_REGISTERED));
 		} else {
 			saveCustomerInBD(customer);
 		}
@@ -86,13 +61,14 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public List<CustomerInformationOutDTO> findAllCustomers() {
-		List<Customer> allUsersInBD = customerRepository.findAll();
 
-		if (allUsersInBD.isEmpty()) {
-			throw new BusinessException(getErrorMessage("zeroUsersInBD"));
+		List<Customer> allCustomersInBD = customerRepository.findAll();
+
+		if (allCustomersInBD.isEmpty()) {
+			throw new BusinessException(messageSource.buildMessage(ErrorMessage.NO_REGISTERED_USERS_FOUND));
 		}
-		return allUsersInBD.parallelStream()
-				.map(customer -> customerMapper.customerToCustomerInformationOutDTO(customer))
+		return allCustomersInBD.parallelStream()
+				.map(customerMapper::customerToCustomerInformationOutDTO)
 				.collect(Collectors.toList());
 	}
 
@@ -103,7 +79,7 @@ public class CustomerServiceImpl implements CustomerService {
 		if (customerFoundInBD.isPresent()) {
 			return customerMapper.customerToCustomerInformationOutDTO(customerFoundInBD.get());
 		} else {
-			throw new BusinessException(getErrorMessage("userNotFound"));
+			throw new BusinessException(messageSource.buildMessage(ErrorMessage.USER_NOT_FOUND));
 		}
 	}
 
@@ -116,7 +92,6 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public String findUserType(String identification) {
 
-		// Optional<List<User>> allUsersFoundInBD = userRepository.findAll();
 		return null;
 	}
 

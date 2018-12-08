@@ -8,14 +8,14 @@ import java.util.List;
 
 public interface CustomerService {
 	
-	public void registerCustomer(CustomerRegistryInDTO customerRegistryInDTO);
+	void registerCustomer(CustomerRegistryInDTO customerRegistryInDTO);
 	
-	public List<CustomerInformationOutDTO> findAllCustomers();
+	List<CustomerInformationOutDTO> findAllCustomers();
 	
-	public CustomerInformationOutDTO findCustomer(String identification);
+	CustomerInformationOutDTO findCustomer(String identification);
 	
-	public void update(Customer customer);
+	void update(Customer customer);
 	
-	public String findUserType(String identification);
+	String findUserType(String identification);
 	
 }
