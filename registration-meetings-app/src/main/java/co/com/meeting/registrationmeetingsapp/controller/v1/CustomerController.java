@@ -1,4 +1,4 @@
-package co.com.meeting.registrationmeetingsapp.controller;
+package co.com.meeting.registrationmeetingsapp.controller.v1;
 
 import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in.CustomerRegistryInDTO;
 import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.out.CustomerInformationOutDTO;

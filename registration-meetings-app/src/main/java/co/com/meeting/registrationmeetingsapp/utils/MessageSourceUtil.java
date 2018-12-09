@@ -19,4 +19,10 @@ public class MessageSourceUtil {
 		return messageSource.getMessage(contentMessage, null, locale);
 	}
 
+	public String buildMessage(String contentMessage, Object[] params) {
+		Locale locale = LocaleContextHolder.getLocale();
+
+		return messageSource.getMessage(contentMessage, params, locale);
+	}
+
 }

@@ -4,6 +4,7 @@ import co.com.meeting.registrationmeetingsapp.api.v1.mapper.CustomerMapper;
 import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in.CustomerRegistryInDTO;
 import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.out.CustomerInformationOutDTO;
 import co.com.meeting.registrationmeetingsapp.exception.BusinessException;
+import co.com.meeting.registrationmeetingsapp.exception.ResourceNotFoundException;
 import co.com.meeting.registrationmeetingsapp.exception.messages.ErrorMessage;
 import co.com.meeting.registrationmeetingsapp.model.entity.Customer;
 import co.com.meeting.registrationmeetingsapp.model.entity.User;
@@ -35,24 +36,20 @@ public class CustomerServiceImpl implements CustomerService {
 
 		Customer customer = customerMapper.customerRegistryInDTOToCustomer(customerRegistryInDTO);
 
-		if (isCustomerAlreadyRegistered(customer)) {
-			throw new BusinessException(messageSource.buildMessage(ErrorMessage.USER_IS_ALREADY_REGISTERED));
-		} else {
-			saveCustomerInBD(customer);
-		}
+		validateIfUserIsAlreadyRegistered(customer);
+		saveCustomerInBD(customer);
 	}
 
-	private boolean isCustomerAlreadyRegistered(Customer customer) {
-		boolean customerIsAlreadyRegisteredInBD = false;
+	private void validateIfUserIsAlreadyRegistered(Customer customer) {
 		try {
 			findCustomer(customer.getIdentification());
-			customerIsAlreadyRegisteredInBD = true;
-		} catch (BusinessException e) {
-			// Es correcto, el usuario aún no existe en el sistema
-			log.info("Usuario no existe, es posible registralo");
+		} catch (ResourceNotFoundException e) {
+			log.info("Usuario con identificación {} no existe, es posible registrarlo", customer.getIdentification());
+			return;
 		}
 
-		return customerIsAlreadyRegisteredInBD;
+		log.error("El usuario con identificación {}, ya se encuentra registrado", customer.getIdentification());
+		throw new BusinessException(messageSource.buildMessage(ErrorMessage.USER_IS_ALREADY_REGISTERED));
 	}
 
 	private User saveCustomerInBD(Customer customer) {
@@ -64,9 +61,6 @@ public class CustomerServiceImpl implements CustomerService {
 
 		List<Customer> allCustomersInBD = customerRepository.findAll();
 
-		if (allCustomersInBD.isEmpty()) {
-			throw new BusinessException(messageSource.buildMessage(ErrorMessage.NO_REGISTERED_USERS_FOUND));
-		}
 		return allCustomersInBD.parallelStream()
 				.map(customerMapper::customerToCustomerInformationOutDTO)
 				.collect(Collectors.toList());
@@ -76,11 +70,13 @@ public class CustomerServiceImpl implements CustomerService {
 	public CustomerInformationOutDTO findCustomer(String identification) {
 
 		Optional<Customer> customerFoundInBD = customerRepository.findByIdentification(identification);
-		if (customerFoundInBD.isPresent()) {
-			return customerMapper.customerToCustomerInformationOutDTO(customerFoundInBD.get());
-		} else {
-			throw new BusinessException(messageSource.buildMessage(ErrorMessage.USER_NOT_FOUND));
-		}
+
+		return customerFoundInBD
+				.map(customerMapper::customerToCustomerInformationOutDTO)
+				.orElseThrow( () -> {
+					log.error("El usuario con identificacion {} no se encuentra registrado", identification);
+					return new ResourceNotFoundException(messageSource.buildMessage(ErrorMessage.USER_NOT_FOUND));
+				});
 	}
 
 	@Override
