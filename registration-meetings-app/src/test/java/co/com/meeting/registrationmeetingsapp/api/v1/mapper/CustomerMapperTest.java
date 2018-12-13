@@ -1,8 +1,7 @@
 package co.com.meeting.registrationmeetingsapp.api.v1.mapper;
 
 import co.com.meeting.registrationmeetingsapp.CustomerTestDataBuilder;
-import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in.CustomerRegistryInDTO;
-import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.out.CustomerInformationOutDTO;
+import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in.CustomerInDTO;
 import co.com.meeting.registrationmeetingsapp.model.entity.Customer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,7 +17,7 @@ public class CustomerMapperTest {
         Customer customer = new CustomerTestDataBuilder().build();
 
         // act
-        CustomerRegistryInDTO customerInformationOutDTO = customerMapper.INSTANCE.customerToCustomerRegistryInDTO(customer);
+        CustomerInDTO customerInformationOutDTO = customerMapper.INSTANCE.customerToCustomerInDTO(customer);
 
         // assert
         Assert.assertEquals(customer.getName(), customerInformationOutDTO.getName());

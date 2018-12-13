@@ -5,12 +5,13 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class CustomerInformationOutDTO {
-	
+public class CustomerOutDTO {
+
+	private Long id;
 	private String identification;
 	private String name;
 	private String lastName;
 	private String age;
 	private Date birthDate;
-	private String type;
+
 }

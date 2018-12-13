@@ -1,5 +1,6 @@
 package co.com.meeting.registrationmeetingsapp.repository;
 
+import co.com.meeting.registrationmeetingsapp.model.entity.Account;
 import co.com.meeting.registrationmeetingsapp.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -27,4 +28,7 @@ public interface UserRepository<T extends User> extends JpaRepository<T, Long> {
 	
 	@Query("SELECT u.type FROM User u WHERE u.identification = :identification")
 	Optional<String> findUserType(@Param("identification") String identification);
+
+	@Query("SELECT u.account FROM User u WHERE u.id = :id")
+	Optional<Account> findAccountById(@Param("id") Long id);
 }

@@ -1,20 +1,22 @@
 package co.com.meeting.registrationmeetingsapp.service;
 
-import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in.CustomerRegistryInDTO;
-import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.out.CustomerInformationOutDTO;
-import co.com.meeting.registrationmeetingsapp.model.entity.Customer;
+import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in.CustomerInDTO;
+import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in.CustomerUpdateInDTO;
+import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.out.CustomerOutDTO;
 
 import java.util.List;
 
 public interface CustomerService {
 	
-	void registerCustomer(CustomerRegistryInDTO customerRegistryInDTO);
+	CustomerOutDTO registerCustomer(CustomerInDTO customerInDTO);
 	
-	List<CustomerInformationOutDTO> findAllCustomers();
+	List<CustomerOutDTO> findAllCustomers();
 	
-	CustomerInformationOutDTO findCustomer(String identification);
+	CustomerOutDTO findCustomer(Long id);
 	
-	void update(Customer customer);
+	CustomerOutDTO update(Long id, CustomerUpdateInDTO customerUpdateInDTO);
+
+	void delete(Long id);
 	
 	String findUserType(String identification);
 	

@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class CustomerRegistryInDTO implements Serializable {
+public class CustomerInDTO implements Serializable {
 
 	private static final long serialVersionUID = 6038552632966804327L;
 	private String identification;

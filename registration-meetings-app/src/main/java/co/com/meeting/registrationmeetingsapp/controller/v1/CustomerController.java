@@ -1,7 +1,9 @@
 package co.com.meeting.registrationmeetingsapp.controller.v1;
 
-import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in.CustomerRegistryInDTO;
-import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.out.CustomerInformationOutDTO;
+import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in.CustomerInDTO;
+import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in.CustomerUpdateInDTO;
+import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.out.CustomerListOutDTO;
+import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.out.CustomerOutDTO;
 import co.com.meeting.registrationmeetingsapp.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@RestController()
+@RequestMapping("v1/customers")
 public class CustomerController {
 
 	private final CustomerService customerService;
@@ -19,36 +22,45 @@ public class CustomerController {
 	}
 
 	@CrossOrigin(value = "*")
-	@PostMapping(value = "/registerCustomer")
-	public ResponseEntity<Void> registerCustomer(@RequestBody CustomerRegistryInDTO customerRegistryInDTO) {
-		customerService.registerCustomer(customerRegistryInDTO);
-		return new ResponseEntity<>(HttpStatus.CREATED);
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public CustomerOutDTO registerCustomer(@RequestBody CustomerInDTO customerInDTO) {
+
+		return customerService.registerCustomer(customerInDTO);
 	}
 
 	@CrossOrigin(value = "*")
-	@GetMapping(value = "/searchCustomer/{identification}")
-	public ResponseEntity<CustomerInformationOutDTO> findCustomerByIdentification(
-			@PathVariable("identification") String customerIdentification) {
-		CustomerInformationOutDTO customerFoundByIdentification = customerService.findCustomer(customerIdentification);
+	@GetMapping(value = "/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<CustomerOutDTO> findCustomerByIdentification(
+			@PathVariable Long id) {
+		CustomerOutDTO customerFoundByIdentification = customerService.findCustomer(id);
 
 		return new ResponseEntity<>(customerFoundByIdentification, HttpStatus.OK);
 	}
 
 	@CrossOrigin(value = "*")
-	@GetMapping(value = "/searchCustomers")
-	public ResponseEntity<List<CustomerInformationOutDTO>> findAllCustomers() {
+	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
+	public CustomerListOutDTO findAllCustomers() {
 
-		List<CustomerInformationOutDTO> allCustomersFound = customerService.findAllCustomers();
+		List<CustomerOutDTO> allCustomersFound = customerService.findAllCustomers();
 
-		return new ResponseEntity<>(allCustomersFound, HttpStatus.OK);
+		return new CustomerListOutDTO(allCustomersFound);
 	}
 
-	
 	@CrossOrigin(value = "*")
-	@PutMapping(value = "/deleteCustomer")
-	public ResponseEntity<Void> deleteCustomerByIdentification(@RequestBody String customerIdentification) {
+	@PutMapping(value = "/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public CustomerOutDTO updateCustomer(@PathVariable Long id, @RequestBody CustomerUpdateInDTO customerUpdateInDTO) {
+		return customerService.update(id, customerUpdateInDTO);
+	}
 
-		return null;
+	@CrossOrigin(value = "*")
+	@DeleteMapping(value = "/{id}")
+	public void deleteCustomerByIdentification(@PathVariable Long id) {
+
+		customerService.delete(id);
 	}
 
 }
