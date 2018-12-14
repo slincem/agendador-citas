@@ -13,6 +13,8 @@ public interface CustomerService {
 	List<CustomerOutDTO> findAllCustomers();
 	
 	CustomerOutDTO findCustomer(Long id);
+
+	CustomerOutDTO findCustomer(String identification);
 	
 	CustomerOutDTO update(Long id, CustomerUpdateInDTO customerUpdateInDTO);
 

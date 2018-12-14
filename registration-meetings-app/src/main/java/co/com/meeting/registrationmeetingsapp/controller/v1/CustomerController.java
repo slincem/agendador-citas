@@ -32,9 +32,19 @@ public class CustomerController {
 	@CrossOrigin(value = "*")
 	@GetMapping(value = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<CustomerOutDTO> findCustomerByIdentification(
+	public ResponseEntity<CustomerOutDTO> findCustomerById(
 			@PathVariable Long id) {
 		CustomerOutDTO customerFoundByIdentification = customerService.findCustomer(id);
+
+		return new ResponseEntity<>(customerFoundByIdentification, HttpStatus.OK);
+	}
+
+	@CrossOrigin(value = "*")
+	@GetMapping(value = "/identification/{identification}")
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<CustomerOutDTO> findCustomerByIdentification(
+			@PathVariable String identification) {
+		CustomerOutDTO customerFoundByIdentification = customerService.findCustomer(identification);
 
 		return new ResponseEntity<>(customerFoundByIdentification, HttpStatus.OK);
 	}
@@ -59,7 +69,6 @@ public class CustomerController {
 	@CrossOrigin(value = "*")
 	@DeleteMapping(value = "/{id}")
 	public void deleteCustomerByIdentification(@PathVariable Long id) {
-
 		customerService.delete(id);
 	}
 
