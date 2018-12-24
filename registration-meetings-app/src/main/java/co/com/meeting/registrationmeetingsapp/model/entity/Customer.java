@@ -6,14 +6,12 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "customer")
 @DiscriminatorValue(value = UserType.CUSTOMER_TYPE)
 public class Customer extends User implements Serializable{
 	

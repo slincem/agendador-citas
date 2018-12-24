@@ -5,6 +5,7 @@ import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.in.CustomerUpdate
 import co.com.meeting.registrationmeetingsapp.api.v1.model.dto.out.CustomerOutDTO;
 import co.com.meeting.registrationmeetingsapp.model.entity.Customer;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -14,6 +15,9 @@ public interface CustomerMapper {
 
     Customer customerRegistryInDTOToCustomer(CustomerInDTO customerInDTO);
     CustomerInDTO customerToCustomerInDTO(Customer customer);
+
+    @Mapping(source = "account.username", target = "username")
     CustomerOutDTO customerToCustomerOutDTO(Customer customer);
+
     Customer customerUpdateInDTOToCustomer(CustomerUpdateInDTO customerUpdateInDTO);
 }

@@ -13,5 +13,6 @@ public class CustomerOutDTO {
 	private String lastName;
 	private String age;
 	private Date birthDate;
+	private String username;
 
 }
